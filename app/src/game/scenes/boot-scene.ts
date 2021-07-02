@@ -88,9 +88,9 @@ export class BootScene extends Phaser.Scene {
    * If all the assets are loaded in, and user is connected to server, start game
    */
   private startGame = () => {
-    // if (this.assetsLoaded && this.connected) {
-    this.scene.start("Game", { selectedGotchi: this.gotchi });
-    // }
+    if (this.assetsLoaded && this.connected) {
+      this.scene.start("Game", { selectedGotchi: this.gotchi });
+    }
   };
 
   /**
