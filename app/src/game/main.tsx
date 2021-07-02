@@ -16,7 +16,7 @@ const Main = () => {
   useEffect(() => {
     if (selectedGotchi) {
       // Socket is called here so we can take advantage of the useEffect hook to disconnect upon leaving the game screen
-      //const socket = io(process.env.REACT_APP_SERVER_PORT || 'http://localhost:443');
+      const socket = io(process.env.REACT_APP_SERVER_PORT || 'http://localhost:443');
 
       let width = window.innerWidth;
       let height = width / 1.778;
@@ -50,7 +50,7 @@ const Main = () => {
             setInitialised(false);
             game.registry.merge({
               selectedGotchi,
-              //socket: socket
+              socket: socket
             });
           },
         },
