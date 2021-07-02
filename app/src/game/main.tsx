@@ -56,9 +56,9 @@ const Main = () => {
         },
       });
 
-      // return () => {
-      //   socket.emit("handleDisconnect");
-      // };
+      return () => {
+        socket.emit("handleDisconnect");
+      };
     }
   }, []);
 
