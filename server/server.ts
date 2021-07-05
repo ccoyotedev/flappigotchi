@@ -15,19 +15,28 @@ const io = require('socket.io')(https, {
 
 const port = process.env.PORT || 443;
 
-const connectedGotchis = {};
+interface Gotchi {
+  name: string,
+  tokenId: string,
+}
+
+const connectedGotchis: {[key: string]: {
+  id: string;
+  gotchi?: Gotchi;
+}} = {};
 
 io.on('connection', function (socket: Socket) {
     const userId = socket.id;
 
     console.log('A user connected: ' + userId);
     connectedGotchis[userId] = {id: userId};
+    console.log(connectedGotchis);
 
     socket.on('handleDisconnect', () => {
       socket.disconnect();
     })
 
-    socket.on('setGotchiData', (gotchi) => {
+    socket.on('setGotchiData', (gotchi: Gotchi) => {
       connectedGotchis[userId].gotchi = gotchi;
     })
 
