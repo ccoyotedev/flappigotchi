@@ -4,6 +4,7 @@ import {
 import { AavegotchiGameObject } from 'types';
 import { getGameWidth, getGameHeight, getRelative } from '../helpers';
 import { Player, Pipe, ScoreZone } from 'game/objects';
+import { Socket } from "socket.io-client";
 
 const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
   active: false,
@@ -15,6 +16,7 @@ const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
  * Scene where gameplay takes place
  */
 export class GameScene extends Phaser.Scene {
+  private socket?: Socket;
   private player?: Player;
   private selectedGotchi?: AavegotchiGameObject;
   private pipes?: Phaser.GameObjects.Group;
@@ -28,6 +30,7 @@ export class GameScene extends Phaser.Scene {
   private score = 0;
   private scoreText?: Phaser.GameObjects.Text;
 
+  private isGameOver = false;
 
   constructor() {
     super(sceneConfig);
@@ -38,6 +41,9 @@ export class GameScene extends Phaser.Scene {
   };
 
   public create(): void {
+    this.socket = this.game.registry.values.socket;
+    this.socket?.emit('gameStarted');
+
     // Add layout
     this.add.image(getGameWidth(this) / 2, getGameHeight(this) / 2, BG).setDisplaySize(getGameWidth(this), getGameHeight(this));
     this.back = this.sound.add(CLICK, { loop: false });
@@ -154,7 +160,12 @@ export class GameScene extends Phaser.Scene {
           this.addScore();
         }
       )
-    } else {  
+    } else {
+      if (!this.isGameOver) {
+        this.isGameOver = true;
+        this.socket?.emit('gameOver', {score: this.score});
+      }
+
       Phaser.Actions.Call(
         (this.pipes as Phaser.GameObjects.Group).getChildren(),
         (pipe) => {
