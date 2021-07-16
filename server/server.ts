@@ -136,6 +136,10 @@ io.on('connection', function (socket: Socket) {
     });
 });
 
+server.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
+});
+
 https.listen(port, function () {
     console.log(`Listening on - PORT:${port}`);
 });
