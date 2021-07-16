@@ -159,7 +159,7 @@ export class GameScene extends Phaser.Scene {
           (zone as ScoreZone).handleOverlap();
           this.addScore();
         }
-      )
+      );
     } else {
       if (!this.isGameOver) {
         this.isGameOver = true;
