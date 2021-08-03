@@ -1,17 +1,10 @@
 require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` });
 import { Socket } from 'socket.io';
 const server = require('express')();
-const fs = require('fs');
 
-const https = process.env.NODE_ENV === "production"
-  ? require('https').createServer({
-      key: fs.readFileSync("/etc/letsencrypt/live/server.flappigotchi.com/privkey.pem", "utf8"),
-      cert: fs.readFileSync("/etc/letsencrypt/live/server.flappigotchi.com/fullchain.pem", "utf8"),
-      ca: fs.readFileSync("/etc/letsencrypt/live/server.flappigotchi.com/fullchain.pem", "utf8"),
-    }, server)
-  : require('http').createServer(server);
+const http = require('http').createServer(server);
 
-const io = require('socket.io')(https, {
+const io = require('socket.io')(http, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"]
@@ -35,7 +28,7 @@ interface ScoreSubmission {
 }
 
 const submitScore = async ({tokenId, score, name}: ScoreSubmission) => {
-  const collection = db.collection(process.env.DB_COLLECTION);
+  const collection = db.collection("test");
   const ref = collection.doc(tokenId);
   const doc = await ref.get().catch(err => {return {status: 400, error: err}});
 
@@ -136,11 +129,7 @@ io.on('connection', function (socket: Socket) {
     });
 });
 
-server.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
-});
-
-https.listen(port, function () {
+http.listen(port, function () {
     console.log(`Listening on - PORT:${port}`);
 });
 
