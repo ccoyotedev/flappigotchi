@@ -17,7 +17,7 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const port = process.env.PORT || 443;
+const port = process.env.PORT || 8080;
 
 const db = admin.firestore();
 
